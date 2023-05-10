@@ -5,6 +5,7 @@ import com.company.job.myhasjobwithjwt.payload.ads.AdsCreateDto;
 import com.company.job.myhasjobwithjwt.payload.ads.AdsUpdateDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -15,6 +16,6 @@ public interface AdsMapper {
     Ads toEntity(AdsCreateDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-    void updateAdsFromDTO(AdsUpdateDto dto, Ads ads);
+    void updateAdsFromDTO(AdsUpdateDto dto, @MappingTarget Ads ads);
 
 }

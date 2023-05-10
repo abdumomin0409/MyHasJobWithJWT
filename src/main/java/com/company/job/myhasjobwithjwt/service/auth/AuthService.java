@@ -105,7 +105,7 @@ public class AuthService {
                     .id(user.getId())
                     .fio(user.getFio())
                     .phoneNumber(user.getPhoneNumber())
-                    .job(user.getJob().getName())
+                    .job(user.getJob())
                     .experience(user.getExperience())
                     .photoUrl(user.getPhotoUrl())
                     .rate(user.getRate())

@@ -6,8 +6,8 @@ import com.company.job.myhasjobwithjwt.payload.user.UserSignUpDto;
 import com.company.job.myhasjobwithjwt.payload.user.UserUpdateDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-import org.springframework.context.annotation.Bean;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -19,7 +19,7 @@ public interface UserMapper {
     ResponseUserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-    void updateUsersFromDTO(UserUpdateDto dto, User user);
+    void updateUsersFromDTO(UserUpdateDto dto, @MappingTarget User user);
 
 
 }
