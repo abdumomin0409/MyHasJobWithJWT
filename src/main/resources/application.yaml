@@ -1,0 +1,55 @@
+SPRING_PROFILES_ACTIVE: dev
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+jwt:
+  access:
+    token:
+      expiry: 60000000
+      secret:
+        key: 357638792F423F4528482B4D6250655368566D597133743677397A24432646294A404E635266546A576E5A7234753778214125442A472D4B6150645367566B58
+  refresh:
+    token:
+      expiry: 864000000 # 10 days
+      secret:
+        key: 7134743777217A25432A462D4A614E645267556B58703272357538782F413F44
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+#twilio:
+#  sid: ${twilio_sid}
+#  token: ${twilio_token}
+#  from:
+#    number: ${twilio_from_number}
+#super_admin_1: ${super_admin1}
+#super_admin_2: ${super_admin2}
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/abitur
+    username: postgres
+    password: 1234
+    driverClassName: org.postgresql.Driver
+#twilio:
+#  sid: AC2bb44224a936e48aba3f3523f31ca8de
+#  token: 25244495cda28fb44d949f200b6264de
+#  from:
+#    number: '+16204458192'
+#super_admin_1: '+998934568461'
+#super_admin_2: '+998930815351'
