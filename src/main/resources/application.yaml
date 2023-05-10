@@ -26,9 +26,9 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
-    username: ${PROD_DB_USERNAME}
-    password: ${PROD_DB_PASSWORD}
+    url: jdbc:postgresql://postgres:HFAgP4zixXUrUTHyUmBP@containers-us-west-35.railway.app:7378/railway
+    username: postgres
+    password: HFAgP4zixXUrUTHyUmBP
 #twilio:
 #  sid: ${twilio_sid}
 #  token: ${twilio_token}
