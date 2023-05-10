@@ -35,7 +35,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/hasjob
+    url: jdbc:postgresql://localhost:5432/my_has_job
     username: postgres
     password: 1234
     driverClassName: org.postgresql.Driver

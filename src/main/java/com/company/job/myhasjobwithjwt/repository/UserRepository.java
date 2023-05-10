@@ -34,4 +34,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying
     @Query("update users u set u.status = ?1 where u.id = ?2")
     void updateStatusById(UserStatus userStatus, String id);
+
 }

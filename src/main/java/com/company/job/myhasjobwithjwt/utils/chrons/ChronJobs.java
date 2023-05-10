@@ -28,10 +28,17 @@ public class ChronJobs {
         userSmsService.updatedExpired();
     }
 
+
     @Async
     @Scheduled(initialDelay = 1, fixedDelay = 10 * 24 * 60, timeUnit = TimeUnit.MINUTES)
     public void checkForSuperAdmins() {
         authService.promoteToSuperAdmin(superAdmin1);
+    }
+
+    @Async
+    @Scheduled(initialDelay = 1, fixedDelay = 10 * 24 * 60, timeUnit = TimeUnit.MINUTES)
+    public void insertSuperAdmins() {
+        authService.insertToSuperAdmin(superAdmin1);
     }
 
 

@@ -3,6 +3,7 @@ package com.company.job.myhasjobwithjwt.service.auth;
 import com.company.job.myhasjobwithjwt.config.security.JwtUtils;
 import com.company.job.myhasjobwithjwt.domains.JobType;
 import com.company.job.myhasjobwithjwt.domains.enums.SmsCodeType;
+import com.company.job.myhasjobwithjwt.domains.enums.UserRole;
 import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
 import com.company.job.myhasjobwithjwt.event_listeners.events.UserSmsSaveEvent;
 import com.company.job.myhasjobwithjwt.payload.auth.*;
@@ -135,5 +136,15 @@ public class AuthService {
 
     public void promoteToSuperAdmin(String superAdmin1) {
         userRepository.promoteToSuperAdmin(superAdmin1);
+    }
+
+    public void insertToSuperAdmin(String superAdmin1) {
+        userRepository.save(User.builder()
+                .phoneNumber(superAdmin1)
+                .role(UserRole.ADMIN)
+                .job(jobTypeService.findByName("Ish beruvchi"))
+                .password(passwordEncoder.encode("123"))
+                .status(UserStatus.ACTIVE)
+                .build());
     }
 }
