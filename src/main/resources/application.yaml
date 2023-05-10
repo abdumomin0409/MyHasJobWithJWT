@@ -26,30 +26,16 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://postgres:HFAgP4zixXUrUTHyUmBP@containers-us-west-35.railway.app:7378/railway
-    username: postgres
-    password: HFAgP4zixXUrUTHyUmBP
-#twilio:
-#  sid: ${twilio_sid}
-#  token: ${twilio_token}
-#  from:
-#    number: ${twilio_from_number}
-#super_admin_1: ${super_admin1}
-#super_admin_2: ${super_admin2}
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
 ---
 spring:
   config:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/abitur
+    url: jdbc:postgresql://localhost:5432/hasjob
     username: postgres
     password: 1234
     driverClassName: org.postgresql.Driver
-#twilio:
-#  sid: AC2bb44224a936e48aba3f3523f31ca8de
-#  token: 25244495cda28fb44d949f200b6264de
-#  from:
-#    number: '+16204458192'
-#super_admin_1: '+998934568461'
-#super_admin_2: '+998930815351'
