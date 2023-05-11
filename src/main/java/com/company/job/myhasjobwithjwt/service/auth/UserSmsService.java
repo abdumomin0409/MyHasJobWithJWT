@@ -31,6 +31,7 @@ public class UserSmsService {
         UserSms build = UserSms.builder()
                 .userId(savedUser.getId())
                 .randomCode(randomCode())
+                .type(type)
                 .toTime(LocalDateTime.now().plus(3, ChronoUnit.MINUTES))
                 .build();
         build.setExpired(false);

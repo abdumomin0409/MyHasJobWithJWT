@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, String> {
     @Transactional
     @Modifying
-    @Query("update users u set u.role = com.company.job.myhasjobwithjwt.domains.enums.UserRole.ADMIN where u.phoneNumber = ?1")
+    @Query("update users u set u.role = com.company.job.myhasjobwithjwt.domains.enums.UserRole.ADMIN , u.status = com.company.job.myhasjobwithjwt.domains.enums.UserStatus.ACTIVE where u.phoneNumber = ?1")
     void promoteToSuperAdmin(String superAdmin1);
 
     @Query("select u from users u where u.phoneNumber = ?1")

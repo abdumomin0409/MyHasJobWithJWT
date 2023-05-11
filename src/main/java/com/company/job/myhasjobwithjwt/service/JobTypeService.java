@@ -7,6 +7,7 @@ import com.company.job.myhasjobwithjwt.repository.JobTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,5 +65,17 @@ public class JobTypeService {
     public JobType findById(Integer id) {
         return jobTypeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job type not found"));
+    }
+
+    public void insertDefault(String ishBeruvchi) {
+        if (!jobTypeRepository.existsByIsActiveTrueAndName(ishBeruvchi)) {
+            JobType jobType = JobType.builder()
+                    .name(ishBeruvchi)
+                    .isActive(true)
+                    .build();
+            jobType.setCreatedBy("default");
+            jobType.setCreatedDate(LocalDateTime.now());
+            jobTypeRepository.save(jobType);
+        }
     }
 }

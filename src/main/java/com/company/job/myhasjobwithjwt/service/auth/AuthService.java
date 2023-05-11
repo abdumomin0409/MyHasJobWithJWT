@@ -3,14 +3,10 @@ package com.company.job.myhasjobwithjwt.service.auth;
 import com.company.job.myhasjobwithjwt.config.security.JwtUtils;
 import com.company.job.myhasjobwithjwt.domains.JobType;
 import com.company.job.myhasjobwithjwt.domains.enums.SmsCodeType;
-import com.company.job.myhasjobwithjwt.domains.enums.UserRole;
 import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
 import com.company.job.myhasjobwithjwt.event_listeners.events.UserSmsSaveEvent;
 import com.company.job.myhasjobwithjwt.payload.auth.*;
-import com.company.job.myhasjobwithjwt.payload.user.ResponseUserDto;
-import com.company.job.myhasjobwithjwt.payload.user.UserSignInDto;
-import com.company.job.myhasjobwithjwt.payload.user.UserSignUpDto;
-import com.company.job.myhasjobwithjwt.payload.user.UserSmsDto;
+import com.company.job.myhasjobwithjwt.payload.user.*;
 import com.company.job.myhasjobwithjwt.service.JobTypeService;
 import com.company.job.myhasjobwithjwt.domains.enums.TokenType;
 import com.company.job.myhasjobwithjwt.domains.User;
@@ -70,7 +66,7 @@ public class AuthService {
         throw new RuntimeException("Invalid code");
     }
 
-    public TokenResponse login(UserSignInDto dto) {
+    public TokenResponse getAccessToken(UserSignInDto dto) {
         String phoneNumber = dto.getPhoneNumber();
         String password = dto.getPassword();
         User user = findByPhone(phoneNumber);
@@ -117,13 +113,34 @@ public class AuthService {
         return all;
     }
 
-    private User findByPhone(String phoneNumber) {
-        return userRepository.optionalFindByPhoneNumber(phoneNumber).orElseThrow(() -> new RuntimeException("Phone number not found"));
+    public void resendCode(String phoneNumber, SmsCodeType smsCodeType) {
+        User user = findByPhone(phoneNumber);
+        applicationEventPublisher.publishEvent(new UserSmsSaveEvent(user, smsCodeType));
     }
 
-    public void resendCode(String phoneNumber) {
-        User user = findByPhone(phoneNumber);
-        applicationEventPublisher.publishEvent(new UserSmsSaveEvent(user, SmsCodeType.FORGOT_PASSWORD));
+    public void updateSuperAdmin(String superAdmin1) {
+        User user = userRepository.findByPhoneNumber(superAdmin1);
+        if (!Objects.isNull(user)) {
+            userRepository.promoteToSuperAdmin(superAdmin1);
+        }
+    }
+
+
+    public void forgetPasswordActivate(UserResetPasswordDTO dto) {
+        User user = findByPhone(dto.phoneNumber());
+        UserSms userSms = userSmsService.findByUserId(user.getId(), SmsCodeType.FORGET_PASSWORD);
+        if (!Objects.isNull(userSms) && userSms.getRandomCode() == Integer.parseInt(dto.code())) {
+            userSms.setExpired(true);
+            userSmsService.update(userSms);
+            user.setPassword(passwordEncoder.encode(dto.password()));
+            userRepository.save(user);
+            return;
+        }
+        throw new RuntimeException("Invalid code");
+    }
+
+    private User findByPhone(String phoneNumber) {
+        return userRepository.optionalFindByPhoneNumber(phoneNumber).orElseThrow(() -> new RuntimeException("Phone number not found"));
     }
 
     public boolean existsByPhoneNumber(String s) {
@@ -134,17 +151,4 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public void promoteToSuperAdmin(String superAdmin1) {
-        userRepository.promoteToSuperAdmin(superAdmin1);
-    }
-
-    public void insertToSuperAdmin(String superAdmin1) {
-        userRepository.save(User.builder()
-                .phoneNumber(superAdmin1)
-                .role(UserRole.ADMIN)
-                .job(jobTypeService.findByName("Ish beruvchi"))
-                .password(passwordEncoder.encode("123"))
-                .status(UserStatus.ACTIVE)
-                .build());
-    }
 }

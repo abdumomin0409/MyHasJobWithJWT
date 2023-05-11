@@ -1,5 +1,6 @@
 package com.company.job.myhasjobwithjwt.utils.chrons;
 
+import com.company.job.myhasjobwithjwt.service.JobTypeService;
 import com.company.job.myhasjobwithjwt.service.auth.AuthService;
 import com.company.job.myhasjobwithjwt.service.auth.UserSmsService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ChronJobs {
 
     private final AuthService authService;
     private final UserSmsService userSmsService;
+    private final JobTypeService jobTypeService;
 
     @Async
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
@@ -29,16 +31,16 @@ public class ChronJobs {
     }
 
 
-    @Async
-    @Scheduled(initialDelay = 1, fixedDelay = 10 * 24 * 60, timeUnit = TimeUnit.MINUTES)
-    public void checkForSuperAdmins() {
-        authService.promoteToSuperAdmin(superAdmin1);
-    }
+//    @Async
+//    @Scheduled(initialDelay = 1, fixedDelay = 10 * 24 * 60, timeUnit = TimeUnit.MINUTES)
+//    public void checkForSuperAdmins() {
+//        authService.promoteToSuperAdmin(superAdmin1);
+//    }
 
     @Async
-    @Scheduled(initialDelay = 1, fixedDelay = 10 * 24 * 60, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 15 * 24 * 60, timeUnit = TimeUnit.MINUTES)
     public void insertSuperAdmins() {
-        authService.insertToSuperAdmin(superAdmin1);
+        authService.updateSuperAdmin(superAdmin1);
     }
 
 
