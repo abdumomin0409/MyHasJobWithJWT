@@ -30,7 +30,8 @@ public class UserSmsService {
         }
         UserSms build = UserSms.builder()
                 .userId(savedUser.getId())
-                .randomCode(randomCode())
+//                .randomCode(randomCode())
+                .randomCode(123456)
                 .type(type)
                 .toTime(LocalDateTime.now().plus(3, ChronoUnit.MINUTES))
                 .build();

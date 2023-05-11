@@ -1,12 +1,10 @@
 package com.company.job.myhasjobwithjwt.payload.user;
 
 import com.company.job.myhasjobwithjwt.costom_annotations.annotations.UniquePhoneNumber;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springdoc.core.annotations.ParameterObject;
 
 @Setter
 @Getter
@@ -30,7 +28,6 @@ public class UserSignUpDto {
     @Size(min = 8, message = "prePassword 8 ta belgidan kam bo'lmasligi kerak")
     private String prePassword;
 
-    @NotNull(message = "jobName bo'sh bo'lmasligi kerak")
     @NotBlank(message = "jobName bo'sh bo'lmasligi kerak")
     private String jobName;
 }

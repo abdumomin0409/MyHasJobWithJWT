@@ -73,16 +73,17 @@ public class GlobalExceptionHandler {
         for (FieldError fieldError : e.getFieldErrors()) {
             String field = fieldError.getField();
             String message = fieldError.getDefaultMessage();
-            errorBody.compute(field, (key, value) -> {
-                if (!Objects.isNull(value))
-                    value.add(message);
+            errorBody.compute(field, (s, values) -> {
+                if (!Objects.isNull(values))
+                    values.add(message);
                 else
-                    value = new ArrayList<>(Collections.singleton(message));
-                return value;
+                    values = new ArrayList<>(Collections.singleton(message));
+                return values;
             });
         }
-        AppErrorDTO appErrorDTO = new AppErrorDTO(request.getRequestURI(), errorMessage, errorBody, 400);
-        return ResponseEntity.status(400).body(new ResponseDTO<>(appErrorDTO));
+        String errorPath = request.getRequestURI();
+        AppErrorDTO error = new AppErrorDTO(errorPath, errorMessage, errorBody, 400);
+        return ResponseEntity.status(400).body(new ResponseDTO<>(error));
     }
 
 

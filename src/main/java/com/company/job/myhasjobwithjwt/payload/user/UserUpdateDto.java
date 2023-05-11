@@ -1,11 +1,6 @@
 package com.company.job.myhasjobwithjwt.payload.user;
 
-import com.company.job.myhasjobwithjwt.costom_annotations.annotations.UniquePhoneNumber;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springdoc.core.annotations.ParameterObject;
 
 @Setter
 @Getter

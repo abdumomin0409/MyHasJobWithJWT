@@ -3,6 +3,7 @@ package com.company.job.myhasjobwithjwt.service;
 import com.company.job.myhasjobwithjwt.config.security.SessionUser;
 import com.company.job.myhasjobwithjwt.domains.JobType;
 import com.company.job.myhasjobwithjwt.domains.User;
+import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
 import com.company.job.myhasjobwithjwt.payload.user.ResponseUserDto;
 import com.company.job.myhasjobwithjwt.payload.user.UserUpdateDto;
 import com.company.job.myhasjobwithjwt.repository.UserRepository;
@@ -40,7 +41,7 @@ public class UserService {
         if (!dtoPassword.equals(dto.getPrePassword())) {
             throw new RuntimeException("Passwords are not equal");
         }
-        if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(UserStatus.DELETED,  dto.getPhoneNumber())) {
             throw new RuntimeException("User with this phone number already exists");
         }
         JobType jobType = jobTypeService.findByName(dto.getJobName());

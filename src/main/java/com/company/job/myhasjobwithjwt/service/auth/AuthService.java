@@ -144,7 +144,7 @@ public class AuthService {
     }
 
     public boolean existsByPhoneNumber(String s) {
-        return userRepository.existsByPhoneNumber(s);
+        return userRepository.existsByPhoneNumber(UserStatus.DELETED, s);
     }
 
     public User saveToDb(User user) {
