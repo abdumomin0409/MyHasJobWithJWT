@@ -13,20 +13,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class Message extends Auditable {
+public class Message {
     @Id
     @UuidGenerator
     private String id;
+
     @Column(nullable = false)
     private String text;
-    @ManyToOne
-    private Chat chat;
-    @ManyToOne
-    private User user;
+
+    private String userId;
+
     @Builder.Default
     private LocalDateTime time = LocalDateTime.now();
-    @Builder.Default
-    private boolean isActive = true;
 
+    @Builder.Default
+    private boolean deleted = false;
 }

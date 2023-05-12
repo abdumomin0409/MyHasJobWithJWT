@@ -37,9 +37,16 @@ public class MyHasJobWithJwtApplication {
     /*
     930815351
 
-  "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODE1MzUxIiwiaWF0IjoxNjgzNDI5NTE4LCJpc3MiOiJodHRwczovL29ubGluZS5wZHAudXoiLCJleHAiOjE2ODM1MTk1MTh9.iXKfaC5WeAtlVuRtUpTEwQLgpFS6KjbBi5oiYmX4imZnlkMGae_jY9V7rXqMhSr0PxCO8Un8VEKjnOjtr0cmLA",
-  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIrOTk4OTMwODE1MzUxIiwiaWF0IjoxNjgzNDI5NTE4LCJpc3MiOiJodHRwczovL29ubGluZS5wZHAudXoiLCJleHAiOjE2ODQzMjk1MTh9.BhfyPJh9PUlS0j9_t95tYY2Vwv5yGbGxm40HUyqivr4"
 
+{
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODE1MzUxIiwiaWF0IjoxNjgzOTA5MDAyLCJpc3MiOiJodHRwczovL29ubGluZS5wZHAudXoiLCJleHAiOjE2ODM5NjkwMDJ9.TX_ZYaPxj8jFpct8nZzZ1n25GY6r5oWaEYBZPDibrctbE9ir-1ujbUz95aUMKIprruguifxfzmLPKAqwP_zgvQ",
+    "accessTokenExpiry": "2023-05-13T09:10:02.680+00:00",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIrOTk4OTMwODE1MzUxIiwiaWF0IjoxNjgzOTA5MDAyLCJpc3MiOiJodHRwczovL29ubGluZS5wZHAudXoiLCJleHAiOjE2ODQ3NzMwMDJ9.JnkTJ4gmThUBc3-fezu3rtyvsJaOqLKZdEoNX6mXHl4",
+    "refreshTokenExpiry": "2023-05-22T16:30:02.692+00:00"
+  },
+  "success": true
+}
 
    */
 

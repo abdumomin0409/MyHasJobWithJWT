@@ -1,9 +1,6 @@
 package com.company.job.myhasjobwithjwt.domains;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,27 +8,27 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @Getter
 @Setter
+@Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Chat extends Auditable {
-
     @Id
     @UuidGenerator
     private String id;
 
-    @ManyToOne
-    private User fromUser;
+    private String fromUserId;
 
-    @ManyToOne
-    private User toUser;
+    private String toUserId;
+
+    @OneToMany
+    private List<Message> messages;
 
     @Builder.Default
-    private boolean isActive = true;
-
+    private boolean deleted = false;
 }
