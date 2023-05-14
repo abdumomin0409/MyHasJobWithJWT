@@ -20,17 +20,17 @@ public class SessionUser {
         Authentication authentication = securityContext.getAuthentication();
         Object principal = authentication.getPrincipal();
         if (!Objects.isNull(principal)) {
-            return userRepository.findByPhoneNumber((String) principal);
+            return userRepository.findByPhoneNumber(principal.toString());
         }
         return null;
     }
 
     public String id() {
         User user = user();
-        if (user != null) {
-            return user.getId();
+        if (user == null) {
+            return "-1";
         }
-        return null;
+        return user.getId();
     }
 
 }

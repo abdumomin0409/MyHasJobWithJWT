@@ -36,7 +36,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.*;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true, prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfigurer {
     private final JWTAuthenticationFilter filter;
     private final ObjectMapper objectMapper;
@@ -54,21 +54,21 @@ public class SecurityConfigurer {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers((AUTH_URL + "/**"),
-                        "/swagger-ui.html",
-                        "/swagger-ui*/**",
-                        "/swagger-ui*/*swagger-initializer.js",
-                        "/v3/api-docs*/**",
-                        "/actuator/health*/**",
-                        "/actuator",
-                        "/error",
-                        "/webjars/**"/*,
-                        "/**" // only for test*/
-                )
+//                .requestMatchers((AUTH_URL + "/**"),
+//                        "/swagger-ui.html",
+//                        "/swagger-ui*/**",
+//                        "/swagger-ui*/*swagger-initializer.js",
+//                        "/v3/api-docs*/**",
+//                        "/actuator/health*/**",
+//                        "/actuator",
+//                        "/error",
+//                        "/webjars/**"/*,
+//                        "/**" // only for test*/
+//                )
+                .requestMatchers("/**")
                 .permitAll()
                 .anyRequest()
-//                .fullyAuthenticated()
-                .authenticated()
+                .fullyAuthenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -86,8 +86,8 @@ public class SecurityConfigurer {
                                      LoggingInterceptor loggingInterceptor) {
         return restTemplateBuilder
                 .additionalInterceptors(loggingInterceptor)
-                .setConnectTimeout(Duration.ofSeconds(5))
-                .setReadTimeout(Duration.ofSeconds(5))
+                .setConnectTimeout(Duration.ofSeconds(10))
+                .setReadTimeout(Duration.ofSeconds(10))
                 .build();
     }
 
@@ -98,7 +98,7 @@ public class SecurityConfigurer {
             String errorPath = request.getRequestURI();
             String errorMessage = accessDeniedException.getMessage();
             int errorCode = 403;
-            AppErrorDTO appErrorDto = new AppErrorDTO(errorMessage, errorPath, null, errorCode);
+            AppErrorDTO appErrorDto = new AppErrorDTO(errorMessage, errorPath, errorCode);
             response.setStatus(errorCode);
             ServletOutputStream outputStream = response.getOutputStream();
             objectMapper.writeValue(outputStream, appErrorDto);
@@ -112,7 +112,7 @@ public class SecurityConfigurer {
             String errorPath = request.getRequestURI();
             String errorMessage = authException.getMessage();
             int errorCode = 401;
-            AppErrorDTO appErrorDto = new AppErrorDTO(errorMessage, errorPath, null, errorCode);
+            AppErrorDTO appErrorDto = new AppErrorDTO(errorMessage, errorPath, errorCode);
             response.setStatus(errorCode);
             ServletOutputStream outputStream = response.getOutputStream();
             objectMapper.writeValue(outputStream, appErrorDto);
@@ -127,22 +127,10 @@ public class SecurityConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        /*configuration.setAllowedOriginPatterns(List.of(
-//                "http://localhost:8080",
-//                "http://localhost:9090",
-//                "http://localhost:9095"
-                "*"
-        ));*/
         configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
-        configuration.setAllowedHeaders(List.of("*"
-                /*"Accept",
-                "Content-Type",
-                "Authorization"*/
-        ));
         configuration.setAllowedMethods(List.of(
                 "GET", "POST", "DELETE", "PUT"
         ));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

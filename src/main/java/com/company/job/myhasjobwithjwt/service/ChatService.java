@@ -21,7 +21,7 @@ public class ChatService {
     private final MessageRepository messageRepository;
 
     public Chat createChat(String toUserId) {
-        String fromUserId = sessionUser.id();
+        String fromUserId = this.sessionUser.id();
         if (fromUserId.equals(toUserId)) {
             throw new RuntimeException("You can't chat with yourself");
         }
@@ -33,18 +33,21 @@ public class ChatService {
                 .fromUserId(fromUserId)
                 .toUserId(toUserId)
                 .build();
-        return chatRepository.save(build);
+        return this.chatRepository.save(build);
     }
 
     public Chat getChat(String toUserId, String fromUserId) {
-        return chatRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+        return this.chatRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
     }
 
     public Chat sendMessage(MessageSendDTO messageSendDTO) {
         String chatId = messageSendDTO.getChatId();
-        Chat chat = chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
+        Chat chat = this.chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
+        String fromUserId = this.sessionUser.id();
+        if (!fromUserId.equals(chat.getFromUserId()) && !fromUserId.equals(chat.getToUserId())) {
+            throw new RuntimeException("You can't send message to this chat");
+        }
         List<Message> messages = chat.getMessages();
-        String fromUserId = messageSendDTO.getUserId();
         Message build = Message.builder()
                 .userId(fromUserId)
                 .text(messageSendDTO.getText())
@@ -52,12 +55,12 @@ public class ChatService {
         Message save = messageRepository.save(build);
         messages.add(save);
         chat.setMessages(messages);
-        return chatRepository.save(chat);
+        return this.chatRepository.save(chat);
     }
 
     public Page<Chat> getAllChats(Pageable pageable) {
-        String userId = sessionUser.id();
-        return chatRepository.findAllByFromUserIdOrToUserId(userId, userId, pageable);
+        String userId = this.sessionUser.id();
+        return this.chatRepository.findAllByFromUserIdOrToUserId(userId, userId, pageable);
     }
 
 

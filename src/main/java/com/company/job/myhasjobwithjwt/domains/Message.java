@@ -1,5 +1,6 @@
 package com.company.job.myhasjobwithjwt.domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
@@ -27,5 +28,6 @@ public class Message {
     private LocalDateTime time = LocalDateTime.now();
 
     @Builder.Default
+    @JsonIgnore
     private boolean deleted = false;
 }

@@ -9,6 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 public class MessageSendDTO {
     private String text;
-    private String userId;
     private String chatId;
 }

@@ -32,7 +32,7 @@ public class ChatController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/create/{toUserId}")
     public ResponseEntity<ResponseDTO<Chat>> createChat(@PathVariable String toUserId) {
-        Chat chat = chatService.createChat(toUserId);
+        Chat chat = this.chatService.createChat(toUserId);
         return ResponseEntity.ok(new ResponseDTO<>("Chat created successfully", chat));
     }
 
@@ -42,7 +42,7 @@ public class ChatController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @PostMapping("/send/message")
     public ResponseEntity<ResponseDTO<Chat>> sendMessage(@RequestBody MessageSendDTO messageSendDTO) {
-        Chat chat = chatService.sendMessage(messageSendDTO);
+        Chat chat = this.chatService.sendMessage(messageSendDTO);
         return ResponseEntity.ok(new ResponseDTO<>("Message sent", chat));
     }
 
@@ -55,7 +55,7 @@ public class ChatController {
                                                                @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<Chat> chats = chatService.getAllChats(pageable);
+        Page<Chat> chats = this.chatService.getAllChats(pageable);
         return ResponseEntity.ok(new ResponseDTO<>("Chat created successfully", chats));
     }
 }

@@ -38,7 +38,7 @@ public class AdsController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO<Ads>> save(@Valid @RequestBody AdsCreateDto dto) {
-        Ads ads = adsService.save(dto);
+        Ads ads = this.adsService.save(dto);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -48,7 +48,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/get/id/{id}")
     public ResponseEntity<ResponseDTO<Ads>> getById(@PathVariable String id) {
-        Ads ads = adsService.getById(id);
+        Ads ads = this.adsService.getById(id);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -61,7 +61,7 @@ public class AdsController {
                                                                @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page-1, size, sort);
-        Page<Ads> ads = adsService.getAllActive(pageable);
+        Page<Ads> ads = this.adsService.getAllActive(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -69,13 +69,13 @@ public class AdsController {
     @Operation(summary = "This API is used for get all fixed ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads found", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @GetMapping("/get/all/fixed")
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get/all/fixed")
     public ResponseEntity<ResponseDTO<Page<Ads>>> getAll(@RequestParam(required = false, defaultValue = "10") Integer size,
                                                          @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page-1, size, sort);
-        Page<Ads> ads = adsService.getAllFixed(pageable);
+        Page<Ads> ads = this.adsService.getAllFixed(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -83,9 +83,9 @@ public class AdsController {
     @Operation(summary = "This API is used for update ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<ResponseDTO<Ads>> update(@RequestBody AdsUpdateDto dto) {
-        Ads ads = adsService.update(dto);
+        Ads ads = this.adsService.update(dto);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -95,7 +95,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO<String>> delete(@PathVariable String id) {
-        String delete = adsService.delete(id);
+        String delete = this.adsService.delete(id);
         return ResponseEntity.ok(new ResponseDTO<>(delete));
     }
 

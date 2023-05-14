@@ -31,7 +31,7 @@ public class MyHasJobWithJwtApplication {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        return () -> Optional.ofNullable(sessionUser.user().getId());
+        return () -> Optional.ofNullable(sessionUser.id());
     }
 
     /*

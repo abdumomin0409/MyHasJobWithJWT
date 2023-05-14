@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 
-import static com.company.job.myhasjobwithjwt.domains.enums.TokenType.ACCESS;
+import static com.company.job.myhasjobwithjwt.domains.enums.TokenType.*;
 
 @Service
 public class JwtUtils {
 
-    private static final TokenType REFRESH = TokenType.REFRESH;
     @Value("${jwt.access.token.secret.key}")
     private String secretKey;
     @Value("${jwt.access.token.expiry}")
@@ -42,7 +41,6 @@ public class JwtUtils {
         String refreshToken = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setIssuer("https://online.pdp.uz")
                 .setExpiration(tokenResponse.getRefreshTokenExpiry())
                 .signWith(signKey(REFRESH), SignatureAlgorithm.HS256)
                 .compact();
@@ -55,7 +53,6 @@ public class JwtUtils {
         String accessToken = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setIssuer("https://online.pdp.uz")
                 .setExpiration(tokenResponse.getAccessTokenExpiry())
                 .signWith(signKey(ACCESS), SignatureAlgorithm.HS512)
                 .compact();
@@ -65,8 +62,7 @@ public class JwtUtils {
 
     public boolean isTokenValid(@NonNull String token, TokenType tokenType) {
         try {
-            Claims claims = getClaims(token, tokenType);
-            Date expiration = claims.getExpiration();
+            Date expiration = getExpiry(token,tokenType);
             return expiration.after(new Date());
         } catch (Exception e) {
             e.printStackTrace();
