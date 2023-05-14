@@ -8,6 +8,8 @@ import com.company.job.myhasjobwithjwt.payload.ads.AdsCreateDto;
 import com.company.job.myhasjobwithjwt.payload.ads.AdsUpdateDto;
 import com.company.job.myhasjobwithjwt.repository.AdsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,15 +37,15 @@ public class AdsService {
     }
 
 
-    public List<Ads> getAllActive() {
-        return adsRepository.findAllActive();
+    public Page<Ads> getAllActive(Pageable pageable) {
+        return adsRepository.findAllActive(pageable);
     }
 
-    public List<Ads> getAllFixed() {
+    public Page<Ads> getAllFixed(Pageable pageable) {
         if (!getUser().getRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("You can't see all ads");
         }
-        return adsRepository.findAllFixed();
+        return adsRepository.findAllFixed(pageable);
     }
 
     public Ads update(AdsUpdateDto dto) {

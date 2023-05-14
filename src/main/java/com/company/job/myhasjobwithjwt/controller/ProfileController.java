@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.PROFILE_URL;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(PROFILE_URL)
+@Tag(name = "Profile", description = "Profile API")
 public class ProfileController {
     private final UserService userService;
 
@@ -35,7 +37,7 @@ public class ProfileController {
     @Operation(summary = "This API is used for updating user profile", responses = {
             @ApiResponse(responseCode = "200", description = "User profile updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ResponseDTO<User>> updateProfile(@RequestBody UserUpdateDto dto) {
         User user = userService.update(dto);
         return ResponseEntity.ok(new ResponseDTO<>("User profile updated", user));

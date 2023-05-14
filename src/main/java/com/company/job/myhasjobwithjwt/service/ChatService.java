@@ -7,6 +7,8 @@ import com.company.job.myhasjobwithjwt.payload.chat.MessageSendDTO;
 import com.company.job.myhasjobwithjwt.repository.ChatRepository;
 import com.company.job.myhasjobwithjwt.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,6 +55,10 @@ public class ChatService {
         return chatRepository.save(chat);
     }
 
+    public Page<Chat> getAllChats(Pageable pageable) {
+        String userId = sessionUser.id();
+        return chatRepository.findAllByFromUserIdOrToUserId(userId, userId, pageable);
+    }
 
 
 }

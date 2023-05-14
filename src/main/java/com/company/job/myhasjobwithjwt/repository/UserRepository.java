@@ -4,6 +4,8 @@ import com.company.job.myhasjobwithjwt.domains.JobType;
 import com.company.job.myhasjobwithjwt.domains.User;
 import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
 import com.company.job.myhasjobwithjwt.payload.user.ResponseUserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,14 +27,16 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByPhoneNumber(String s);
 
     @Query("select (count(u) > 0) from users u where u.status <> ?1 and u.phoneNumber = ?2")
-    boolean existsByPhoneNumber(UserStatus status , String s);
+    boolean existsByPhoneNumber(UserStatus status, String s);
 
     @Query("select u from users u where u.status = ?1 and u.job <> ?2")
-    List<User> findAllByStatus(UserStatus userStatus, JobType jobType);
+    Page<User> findAllByStatus(UserStatus userStatus, JobType jobType, Pageable pageable);
 
     @Transactional
     @Modifying
     @Query("update users u set u.status = ?1 where u.id = ?2")
     void updateStatusById(UserStatus userStatus, String id);
 
+    @Query("select u from users u where u.status = ?1 and u.job = ?2")
+    User findByJob(UserStatus status, JobType jobType);
 }

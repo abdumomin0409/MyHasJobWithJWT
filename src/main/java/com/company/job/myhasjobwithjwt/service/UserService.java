@@ -7,7 +7,7 @@ import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
 import com.company.job.myhasjobwithjwt.payload.user.ResponseUserDto;
 import com.company.job.myhasjobwithjwt.payload.user.UserUpdateDto;
 import com.company.job.myhasjobwithjwt.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +17,18 @@ import java.util.Objects;
 import static com.company.job.myhasjobwithjwt.mappers.UserMapper.USER_MAPPER;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final SessionUser sessionUser;
     private final PasswordEncoder encoder;
     private final JobTypeService jobTypeService;
+
+    public UserService(UserRepository userRepository, SessionUser sessionUser, PasswordEncoder encoder, @Lazy JobTypeService jobTypeService) {
+        this.userRepository = userRepository;
+        this.sessionUser = sessionUser;
+        this.encoder = encoder;
+        this.jobTypeService = jobTypeService;
+    }
 
     public User currentUser() {
         return userRepository.findById(sessionUser.id())
@@ -57,4 +63,7 @@ public class UserService {
     }
 
 
+    public User findJobType(JobType jobType) {
+        return userRepository.findByJob(UserStatus.DELETED, jobType);
+    }
 }

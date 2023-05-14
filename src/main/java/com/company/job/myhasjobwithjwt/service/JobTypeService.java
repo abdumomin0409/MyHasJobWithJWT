@@ -1,20 +1,26 @@
 package com.company.job.myhasjobwithjwt.service;
 
 import com.company.job.myhasjobwithjwt.domains.JobType;
+import com.company.job.myhasjobwithjwt.domains.User;
 import com.company.job.myhasjobwithjwt.payload.jobType.JobDto;
 import com.company.job.myhasjobwithjwt.payload.jobType.ResponseJobDto;
 import com.company.job.myhasjobwithjwt.repository.JobTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class JobTypeService {
     private final JobTypeRepository jobTypeRepository;
+    private final UserService userService;
 
 
     public JobType save(String jobName) {
@@ -40,20 +46,23 @@ public class JobTypeService {
         return all;
     }
 
-    public List<JobType> allJobType() {
-        return jobTypeRepository.findAll();
+    public Page<JobType> allJobType(Pageable pageable) {
+        return jobTypeRepository.findAll(pageable);
     }
 
     public JobType update(JobDto jobUpdateDto) {
-        JobType jobType = this.findByName(jobUpdateDto.getOldName());
-        jobType.setName(jobUpdateDto.getNewName());
-        return jobTypeRepository.save(jobType);
+        this.findByName(jobUpdateDto.getOldName());
+        jobTypeRepository.updateByActiveTrueAndName(jobUpdateDto.getNewName(), jobUpdateDto.getOldName());
+        return this.findByName(jobUpdateDto.getNewName());
     }
 
     public String delete(Integer id) {
         JobType jobType = this.findById(id);
-        jobType.setActive(false);
-        jobTypeRepository.save(jobType);
+        User user = this.userService.findJobType(jobType);
+        if (!Objects.isNull(user)) {
+            throw new RuntimeException("This job type is used by user");
+        }
+        jobTypeRepository.deleteById(id);
         return "Job type successfully deleted";
     }
 
@@ -67,15 +76,4 @@ public class JobTypeService {
                 .orElseThrow(() -> new RuntimeException("Job type not found"));
     }
 
-    public void insertDefault(String ishBeruvchi) {
-        if (!jobTypeRepository.existsByIsActiveTrueAndName(ishBeruvchi)) {
-            JobType jobType = JobType.builder()
-                    .name(ishBeruvchi)
-                    .isActive(true)
-                    .build();
-            jobType.setCreatedBy("default");
-            jobType.setCreatedDate(LocalDateTime.now());
-            jobTypeRepository.save(jobType);
-        }
-    }
 }

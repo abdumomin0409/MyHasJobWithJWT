@@ -14,13 +14,13 @@ import com.company.job.myhasjobwithjwt.domains.UserSms;
 import com.company.job.myhasjobwithjwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.company.job.myhasjobwithjwt.mappers.UserMapper.USER_MAPPER;
@@ -93,24 +93,9 @@ public class AuthService {
         return jwtUtils.generateAccessToken(phoneNumber, tokenResponse);
     }
 
-    public List<ResponseUserDto> getAllActive() {
+    public Page<User> getAllActive(Pageable pageable) {
         JobType byName = jobTypeService.findByName("Ish beruvchi");
-        List<ResponseUserDto> all = new ArrayList<>();
-        List<User> userList = userRepository.findAllByStatus(UserStatus.ACTIVE, byName);
-        userList.forEach(user -> {
-            ResponseUserDto responseUserDto = ResponseUserDto.builder()
-                    .id(user.getId())
-                    .fio(user.getFio())
-                    .phoneNumber(user.getPhoneNumber())
-                    .job(user.getJob())
-                    .experience(user.getExperience())
-                    .photoUrl(user.getPhotoUrl())
-                    .rate(user.getRate())
-                    .createdAt(user.getCreatedAt())
-                    .build();
-            all.add(responseUserDto);
-        });
-        return all;
+        return userRepository.findAllByStatus(UserStatus.ACTIVE, byName, pageable);
     }
 
     public void resendCode(String phoneNumber, SmsCodeType smsCodeType) {
@@ -151,4 +136,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
+    public Page<User> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 }

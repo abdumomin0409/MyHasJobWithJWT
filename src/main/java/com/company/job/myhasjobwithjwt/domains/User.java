@@ -2,6 +2,7 @@ package com.company.job.myhasjobwithjwt.domains;
 
 import com.company.job.myhasjobwithjwt.domains.enums.UserRole;
 import com.company.job.myhasjobwithjwt.domains.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,7 @@ public class User {
     private String phoneNumber;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     @ManyToOne(optional = false)
@@ -42,10 +44,12 @@ public class User {
     private String photoUrl;
 
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private UserStatus status;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private UserRole role = UserRole.USER;
 
     @Builder.Default

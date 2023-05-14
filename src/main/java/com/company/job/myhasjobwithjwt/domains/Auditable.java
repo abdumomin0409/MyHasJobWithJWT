@@ -24,9 +24,9 @@ public class Auditable {
     @CreatedBy
     private String createdBy;
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
     @LastModifiedBy
     private String lastModifiedBy;
     @UpdateTimestamp
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 }

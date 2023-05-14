@@ -2,6 +2,8 @@ package com.company.job.myhasjobwithjwt.repository;
 
 import com.company.job.myhasjobwithjwt.domains.Ads;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,10 +19,10 @@ public interface AdsRepository extends JpaRepository<Ads, String> {
     Optional<Ads> findId(String id);
 
     @Query("select a from Ads a where a.isActive = true")
-    List<Ads> findAllActive();
+    Page<Ads> findAllActive(Pageable pageable);
 
     @Query("select a from Ads a ")
-    List<Ads> findAllFixed();
+    Page<Ads> findAllFixed(Pageable pageable);
 
 
 

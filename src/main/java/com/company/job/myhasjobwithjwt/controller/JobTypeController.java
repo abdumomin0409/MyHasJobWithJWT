@@ -10,7 +10,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -74,8 +79,11 @@ public class JobTypeController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/find/all/fixed")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO<List<JobType>>> allJobType() {
-        List<JobType> all = jobTypeService.allJobType();
+    public ResponseEntity<ResponseDTO<Page<JobType>>> allJobType(@RequestParam(required = false, defaultValue = "10") Integer size,
+                                                                 @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<JobType> all = jobTypeService.allJobType(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(all));
     }
 
@@ -94,9 +102,9 @@ public class JobTypeController {
             @ApiResponse(responseCode = "200", description = "Job type deleted", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Integer id) {
+    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Integer id) {
         String delete = jobTypeService.delete(id);
-        return ResponseEntity.ok(new ResponseDTO<>("Job type deleted successfully", delete));
+        return ResponseEntity.ok(new ResponseDTO<>(delete, null));
     }
 
 }

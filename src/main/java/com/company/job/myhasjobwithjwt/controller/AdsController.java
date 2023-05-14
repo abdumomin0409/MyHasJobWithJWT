@@ -11,7 +11,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -52,8 +57,11 @@ public class AdsController {
             @ApiResponse(responseCode = "200", description = "Ads found", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/get/all/active")
-    public ResponseEntity<ResponseDTO<List<Ads>>> getAllActive() {
-        List<Ads> ads = adsService.getAllActive();
+    public ResponseEntity<ResponseDTO<Page<Ads>>> getAllActive(@RequestParam(required = false, defaultValue = "10") Integer size,
+                                                               @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        Page<Ads> ads = adsService.getAllActive(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
@@ -63,8 +71,11 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/get/all/fixed")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO<List<Ads>>> getAll() {
-        List<Ads> ads = adsService.getAllFixed();
+    public ResponseEntity<ResponseDTO<Page<Ads>>> getAll(@RequestParam(required = false, defaultValue = "10") Integer size,
+                                                         @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        Page<Ads> ads = adsService.getAllFixed(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
 
