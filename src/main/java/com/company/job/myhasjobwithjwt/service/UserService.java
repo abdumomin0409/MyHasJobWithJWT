@@ -47,14 +47,12 @@ public class UserService {
         if (!dtoPassword.equals(dto.getPrePassword())) {
             throw new RuntimeException("Passwords are not equal");
         }
-        if (userRepository.existsByPhoneNumber(UserStatus.DELETED,  dto.getPhoneNumber())) {
-            throw new RuntimeException("User with this phone number already exists");
-        }
-        JobType jobType = jobTypeService.findByName(dto.getJobName());
-        if (Objects.isNull(jobType)) {
-            throw new RuntimeException("Job type not found!");
-        }
         User user = currentUser();
+        if (!user.getPhoneNumber().equals(dto.getPhoneNumber()))
+            if (userRepository.existsByPhoneNumber(UserStatus.DELETED, dto.getPhoneNumber()))
+                throw new RuntimeException("User with this phone number already exists");
+
+        JobType jobType = jobTypeService.findByName(dto.getJobName());
         dto.setPassword(encoder.encode(dtoPassword));
         USER_MAPPER.updateUsersFromDTO(dto, user);
         user.setJob(jobType);

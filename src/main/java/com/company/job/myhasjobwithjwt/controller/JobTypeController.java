@@ -35,7 +35,8 @@ public class JobTypeController {
     @Operation(summary = "This API is used for saving job type", responses = {
             @ApiResponse(responseCode = "201", description = "Job type saved", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PostMapping("/save")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/create")
     public ResponseEntity<ResponseDTO<JobType>> save(@RequestParam String jobName) {
         JobType save = jobTypeService.save(jobName);
         return ResponseEntity.status(201).body(new ResponseDTO<>(save));
@@ -80,7 +81,7 @@ public class JobTypeController {
     @GetMapping("/find/all/fixed")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO<Page<JobType>>> allJobType(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                                 @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                                 @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<JobType> all = jobTypeService.allJobType(pageable);

@@ -50,22 +50,20 @@ public class SecurityConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors().configurationSource(corsConfigurationSource())
+                .cors()
+                .configurationSource(corsConfigurationSource())
                 .and()
-                .csrf().disable()
+                .csrf()
+                .disable()
                 .authorizeHttpRequests()
-//                .requestMatchers((AUTH_URL + "/**"),
-//                        "/swagger-ui.html",
-//                        "/swagger-ui*/**",
-//                        "/swagger-ui*/*swagger-initializer.js",
-//                        "/v3/api-docs*/**",
-//                        "/actuator/health*/**",
-//                        "/actuator",
-//                        "/error",
-//                        "/webjars/**"/*,
-//                        "/**" // only for test*/
-//                )
-                .requestMatchers("/**")
+                .requestMatchers((AUTH_URL + "/**"),
+                        "/swagger-ui.html",
+                        "/swagger-ui*/**",
+                        "/swagger-resources/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui*/*swagger-initializer.js",
+                        "/v3/api-docs*/**"
+                )
                 .permitAll()
                 .anyRequest()
                 .fullyAuthenticated()
@@ -80,17 +78,6 @@ public class SecurityConfigurer {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
-                                     LoggingInterceptor loggingInterceptor) {
-        return restTemplateBuilder
-                .additionalInterceptors(loggingInterceptor)
-                .setConnectTimeout(Duration.ofSeconds(10))
-                .setReadTimeout(Duration.ofSeconds(10))
-                .build();
-    }
-
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
@@ -127,9 +114,19 @@ public class SecurityConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:8080",
+                "https://hasjob.up.railway.app",
+                "*"
+        ));
+//        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
         configuration.setAllowedMethods(List.of(
                 "GET", "POST", "DELETE", "PUT"
+        ));
+        configuration.setAllowedHeaders(List.of("*",
+                "Accept",
+                "Content-Type",
+                "Authorization"
         ));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

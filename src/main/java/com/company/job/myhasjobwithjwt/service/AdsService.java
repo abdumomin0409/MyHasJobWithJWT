@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static com.company.job.myhasjobwithjwt.mappers.AdsMapper.ADS_MAPPER;
 
 @Service
@@ -29,23 +27,24 @@ public class AdsService {
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Latitude or Longitude must be double");
         }
-        adsRepository.findByTitleAndPrice(dto.getTitle(), dto.getPrice())
-                .orElseThrow(() -> new RuntimeException("Ads already exists"));
+        if (this.existsTitleAndAddressAndPrice(dto.getTitle(), dto.getAddress(), dto.getPrice())) {
+            throw new RuntimeException("This Ads already exists");
+        }
         Ads ads = ADS_MAPPER.toEntity(dto);
         ads.setUser(getUser());
-        return adsRepository.save(ads);
+        return this.adsRepository.save(ads);
     }
 
 
     public Page<Ads> getAllActive(Pageable pageable) {
-        return adsRepository.findAllActive(pageable);
+        return this.adsRepository.findAllActive(pageable);
     }
 
     public Page<Ads> getAllFixed(Pageable pageable) {
         if (!getUser().getRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("You can't see all ads");
         }
-        return adsRepository.findAllFixed(pageable);
+        return this.adsRepository.findAllFixed(pageable);
     }
 
     public Ads update(AdsUpdateDto dto) {
@@ -59,8 +58,10 @@ public class AdsService {
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Latitude or Longitude must be double");
         }
+        if (this.existsTitleAndAddressAndPrice(dto.getTitle(), dto.getAddress(), dto.getPrice()))
+            throw new RuntimeException("This Ads already exists");
         ADS_MAPPER.updateAdsFromDTO(dto, oldAds);
-        return adsRepository.save(oldAds);
+        return this.adsRepository.save(oldAds);
     }
 
     public String delete(String id) {
@@ -69,19 +70,23 @@ public class AdsService {
             throw new RuntimeException("You can't delete this ads");
         }
         ads.setActive(false);
-        adsRepository.save(ads);
+        this.adsRepository.save(ads);
         return "Ads successfully deleted";
     }
 
     public Ads getById(String id) {
-        return adsRepository.findId(id).orElseThrow(() -> new RuntimeException("Ads not found"));
+        return this.adsRepository.findId(id).orElseThrow(() -> new RuntimeException("Ads not found"));
     }
 
     public User getUser() {
-        return sessionUser.user();
+        return this.sessionUser.user();
     }
 
     public Ads findById(String id) {
-        return adsRepository.findId(id).orElseThrow(() -> new RuntimeException("Ads not found"));
+        return this.adsRepository.findId(id).orElseThrow(() -> new RuntimeException("Ads not found"));
+    }
+
+    public boolean existsTitleAndAddressAndPrice(String title, String address, Double price) {
+        return this.adsRepository.existsByActiveTrueAndTitleAndPrice(title, address, price);
     }
 }

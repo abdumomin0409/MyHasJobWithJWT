@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AdsRepository extends JpaRepository<Ads, String> {
-
-    @Query("select a from Ads a where a.isActive = true and a.title = ?1 and a.price = ?2")
-    Optional<Ads> findByTitleAndPrice(String title, Double price);
+    @Query("select (count(a) > 0) from Ads a where a.isActive = true and a.title = ?1 and a.address = ?2 and a.price = ?3")
+    boolean existsByActiveTrueAndTitleAndPrice(String title, String address, Double price);
 
     @Query("select a from Ads a where a.isActive = true and a.id = ?1")
     Optional<Ads> findId(String id);

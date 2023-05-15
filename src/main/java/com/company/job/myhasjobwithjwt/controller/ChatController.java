@@ -52,7 +52,7 @@ public class ChatController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/get/all")
     public ResponseEntity<ResponseDTO<Page<Chat>>> getAllChats(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                               @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                               @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Chat> chats = this.chatService.getAllChats(pageable);

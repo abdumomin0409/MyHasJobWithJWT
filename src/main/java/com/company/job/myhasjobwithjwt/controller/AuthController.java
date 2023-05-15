@@ -118,7 +118,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get/all")
     public ResponseEntity<ResponseDTO<Page<User>>> getAll(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                          @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                          @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<User> all = this.authService.getAll(pageable);
@@ -132,7 +132,7 @@ public class AuthController {
     })
     @GetMapping("/menu")
     public ResponseEntity<ResponseDTO<Page<?>>> getMenu(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                        @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                        @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         User user = sessionUser.user();
         if (user == null) {
             throw new RuntimeException("User not found");

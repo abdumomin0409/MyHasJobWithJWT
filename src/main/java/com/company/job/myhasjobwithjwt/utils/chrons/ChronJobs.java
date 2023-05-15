@@ -1,6 +1,6 @@
 package com.company.job.myhasjobwithjwt.utils.chrons;
 
-import com.company.job.myhasjobwithjwt.service.JobTypeService;
+//import com.company.job.myhasjobwithjwt.service.JobTypeService;
 import com.company.job.myhasjobwithjwt.service.auth.AuthService;
 import com.company.job.myhasjobwithjwt.service.auth.UserSmsService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class ChronJobs {
 
     private final AuthService authService;
     private final UserSmsService userSmsService;
-    private final JobTypeService jobTypeService;
+//    private final JobTypeService jobTypeService;
 
     @Async
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.MINUTES)
     public void updateSMSWithTime() {
         userSmsService.updatedExpired();
     }

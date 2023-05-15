@@ -19,18 +19,12 @@ import java.util.Optional;
 @EnableAsync
 public class MyHasJobWithJwtApplication {
 
-    private final SessionUser sessionUser;
-
-    public MyHasJobWithJwtApplication(SessionUser sessionUser) {
-        this.sessionUser = sessionUser;
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(MyHasJobWithJwtApplication.class, args);
     }
 
     @Bean
-    public AuditorAware<String> auditorProvider() {
+    public AuditorAware<String> auditorProvider(SessionUser sessionUser) {
         return () -> Optional.ofNullable(sessionUser.id());
     }
 

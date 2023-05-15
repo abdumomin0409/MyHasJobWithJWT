@@ -58,9 +58,9 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/get/all/active")
     public ResponseEntity<ResponseDTO<Page<Ads>>> getAllActive(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                               @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                               @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
-        Pageable pageable = PageRequest.of(page-1, size, sort);
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Ads> ads = this.adsService.getAllActive(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
@@ -72,9 +72,9 @@ public class AdsController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get/all/fixed")
     public ResponseEntity<ResponseDTO<Page<Ads>>> getAll(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                         @RequestParam(required = false, defaultValue = "0") @Min(value = 1) Integer page) {
+                                                         @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
-        Pageable pageable = PageRequest.of(page-1, size, sort);
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Ads> ads = this.adsService.getAllFixed(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
