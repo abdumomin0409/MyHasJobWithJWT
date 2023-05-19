@@ -17,11 +17,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class JobTypeService {
     private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
 
+    public JobTypeService(JobTypeRepository jobTypeRepository,@Lazy UserService userService) {
+        this.jobTypeRepository = jobTypeRepository;
+        this.userService = userService;
+    }
 
     public JobType save(String jobName) {
         if (jobTypeRepository.existsByIsActiveTrueAndName(jobName)) {

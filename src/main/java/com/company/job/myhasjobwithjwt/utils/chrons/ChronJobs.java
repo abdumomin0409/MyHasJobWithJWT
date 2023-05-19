@@ -25,7 +25,7 @@ public class ChronJobs {
 //    private final JobTypeService jobTypeService;
 
     @Async
-    @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 60, timeUnit = TimeUnit.MINUTES)
     public void updateSMSWithTime() {
         userSmsService.updatedExpired();
     }
@@ -38,7 +38,7 @@ public class ChronJobs {
 //    }
 
     @Async
-    @Scheduled(initialDelay = 1, fixedDelay = 15 * 24 * 60, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 2, fixedDelay = 15 * 24 * 60, timeUnit = TimeUnit.MINUTES)
     public void insertSuperAdmins() {
         authService.updateSuperAdmin(superAdmin1);
     }

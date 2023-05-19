@@ -1,14 +1,10 @@
 package com.company.job.myhasjobwithjwt.controller;
 
-import com.company.job.myhasjobwithjwt.config.security.SessionUser;
-import com.company.job.myhasjobwithjwt.domains.Ads;
 import com.company.job.myhasjobwithjwt.domains.User;
 import com.company.job.myhasjobwithjwt.domains.enums.SmsCodeType;
-import com.company.job.myhasjobwithjwt.domains.enums.UserRole;
 import com.company.job.myhasjobwithjwt.payload.ResponseDTO;
 import com.company.job.myhasjobwithjwt.payload.auth.TokenResponse;
 import com.company.job.myhasjobwithjwt.payload.user.*;
-import com.company.job.myhasjobwithjwt.service.AdsService;
 import com.company.job.myhasjobwithjwt.service.auth.AuthService;
 import com.company.job.myhasjobwithjwt.payload.auth.RefreshTokenRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,14 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.company.job.myhasjobwithjwt.utils.BaseUrls.*;
@@ -35,9 +25,6 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.*;
 @Tag(name = "Authenticate users", description = "This API is used for authenticate users")
 public class AuthController {
     private final AuthService authService;
-    private final SessionUser sessionUser;
-    private final AdsService adsService;
-
 
     @Operation(summary = "This API is used for register users", responses = {
             @ApiResponse(responseCode = "201", description = "User Successfully Registered", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -45,7 +32,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO<User>> register(@Valid @RequestBody UserSignUpDto dto) {
-        User user = authService.signUp(dto);
+        User user = this.authService.signUp(dto);
         return ResponseEntity.status(201).body(new ResponseDTO<>("Sms code successfully sent", user));
     }
 
@@ -56,7 +43,7 @@ public class AuthController {
     })
     @PostMapping("/activate")
     public ResponseEntity<ResponseDTO<String>> activate(@Valid @RequestBody UserSmsDto dto) {
-        String activate = authService.activate(dto);
+        String activate = this.authService.activate(dto);
         return ResponseEntity.ok(new ResponseDTO<>(activate));
     }
 
@@ -112,44 +99,4 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "This API is used for get all users ", responses = {
-            @ApiResponse(responseCode = "200", description = "Returned all users", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/get/all")
-    public ResponseEntity<ResponseDTO<Page<User>>> getAll(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                          @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<User> all = this.authService.getAll(pageable);
-        return ResponseEntity.ok(new ResponseDTO<>(all));
-    }
-
-
-    @Operation(summary = "This API is used for main menu user", responses = {
-            @ApiResponse(responseCode = "200", description = "Users returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
-    })
-    @GetMapping("/menu")
-    public ResponseEntity<ResponseDTO<Page<?>>> getMenu(@RequestParam(required = false, defaultValue = "10") Integer size,
-                                                        @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
-        User user = sessionUser.user();
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-        if (user.getRole().equals(UserRole.ADMIN)) {
-            return ResponseEntity.ok(new ResponseDTO<>(Page.empty()));
-        }
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
-        if (user.getRole().equals(UserRole.USER) && user.getJob().getName().equals("Ish beruvchi")) {
-            Page<User> allActive = authService.getAllActive(pageable);
-            return ResponseEntity.ok(new ResponseDTO<>(allActive));
-        }
-        if (user.getRole().equals(UserRole.USER)) {
-            Page<Ads> allActive = adsService.getAllActive(pageable);
-            return ResponseEntity.ok(new ResponseDTO<>(allActive));
-        }
-        return ResponseEntity.ok(new ResponseDTO<>(Page.empty()));
-    }
 }

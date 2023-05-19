@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +27,16 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.JOB_TYPE_URL;
 
 @RestController
 @RequestMapping(JOB_TYPE_URL)
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Tag(name = "Job type", description = "Job type API")
 public class JobTypeController {
 
     private final JobTypeService jobTypeService;
+
+    public JobTypeController(@Lazy JobTypeService jobTypeService) {
+        this.jobTypeService = jobTypeService;
+    }
+
 
     @Operation(summary = "This API is used for saving job type", responses = {
             @ApiResponse(responseCode = "201", description = "Job type saved", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -38,7 +44,7 @@ public class JobTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO<JobType>> save(@RequestParam String jobName) {
-        JobType save = jobTypeService.save(jobName);
+        JobType save = this.jobTypeService.save(jobName);
         return ResponseEntity.status(201).body(new ResponseDTO<>(save));
     }
 
@@ -48,7 +54,7 @@ public class JobTypeController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/find/name")
     public ResponseEntity<ResponseDTO<ResponseJobDto>> findByName(@RequestParam String jobName) {
-        JobType byName = jobTypeService.findByName(jobName);
+        JobType byName = this.jobTypeService.findByName(jobName);
         ResponseJobDto body = new ResponseJobDto(byName.getId(), byName.getName());
         return ResponseEntity.ok(new ResponseDTO<>(body));
     }
@@ -59,7 +65,7 @@ public class JobTypeController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/find/id/{id}")
     public ResponseEntity<ResponseDTO<ResponseJobDto>> findById(@PathVariable Integer id) {
-        JobType byId = jobTypeService.findById(id);
+        JobType byId = this.jobTypeService.findById(id);
         ResponseJobDto dto = new ResponseJobDto(byId.getId(), byId.getName());
         return ResponseEntity.ok(new ResponseDTO<>(dto));
     }
@@ -69,8 +75,9 @@ public class JobTypeController {
             @ApiResponse(responseCode = "200", description = "Job types returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @GetMapping("/find/all")
+    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     public ResponseEntity<ResponseDTO<List<ResponseJobDto>>> findAll() {
-        List<ResponseJobDto> all = jobTypeService.findAll();
+        List<ResponseJobDto> all = this.jobTypeService.findAll();
         return ResponseEntity.ok(new ResponseDTO<>(all));
     }
 
@@ -84,7 +91,7 @@ public class JobTypeController {
                                                                  @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<JobType> all = jobTypeService.allJobType(pageable);
+        Page<JobType> all = this.jobTypeService.allJobType(pageable);
         return ResponseEntity.ok(new ResponseDTO<>(all));
     }
 
@@ -94,7 +101,7 @@ public class JobTypeController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO<JobType>> update(@RequestBody JobDto jobUpdateDto) {
-        JobType update = jobTypeService.update(jobUpdateDto);
+        JobType update = this.jobTypeService.update(jobUpdateDto);
         return ResponseEntity.ok(new ResponseDTO<>("Job type updated successfully", update));
     }
 
@@ -104,7 +111,7 @@ public class JobTypeController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Integer id) {
-        String delete = jobTypeService.delete(id);
+        String delete = this.jobTypeService.delete(id);
         return ResponseEntity.ok(new ResponseDTO<>(delete, null));
     }
 

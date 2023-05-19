@@ -21,12 +21,7 @@ public class AdsService {
     private final SessionUser sessionUser;
 
     public Ads save(AdsCreateDto dto) {
-        try {
-            double v = Double.parseDouble(dto.getLatitude());
-            double v1 = Double.parseDouble(dto.getLongitude());
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Latitude or Longitude must be double");
-        }
+        this.checkLatitudeAndLongitude(dto.getLatitude(), dto.getLongitude());
         if (this.existsTitleAndAddressAndPrice(dto.getTitle(), dto.getAddress(), dto.getPrice())) {
             throw new RuntimeException("This Ads already exists");
         }
@@ -52,12 +47,7 @@ public class AdsService {
         if (!oldAds.getUser().equals(getUser())) {
             throw new RuntimeException("You can't update this ads");
         }
-        try {
-            double v = Double.parseDouble(dto.getLatitude());
-            double v1 = Double.parseDouble(dto.getLongitude());
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Latitude or Longitude must be double");
-        }
+        this.checkLatitudeAndLongitude(dto.getLatitude(), dto.getLongitude());
         if (this.existsTitleAndAddressAndPrice(dto.getTitle(), dto.getAddress(), dto.getPrice()))
             throw new RuntimeException("This Ads already exists");
         ADS_MAPPER.updateAdsFromDTO(dto, oldAds);
@@ -84,6 +74,15 @@ public class AdsService {
 
     public Ads findById(String id) {
         return this.adsRepository.findId(id).orElseThrow(() -> new RuntimeException("Ads not found"));
+    }
+
+    public void checkLatitudeAndLongitude(String latitude, String longitude) {
+        try {
+            double v = Double.parseDouble(latitude);
+            double v1 = Double.parseDouble(longitude);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Latitude or Longitude must be double");
+        }
     }
 
     public boolean existsTitleAndAddressAndPrice(String title, String address, Double price) {

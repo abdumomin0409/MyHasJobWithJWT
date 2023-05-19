@@ -8,6 +8,8 @@ import com.company.job.myhasjobwithjwt.payload.user.ResponseUserDto;
 import com.company.job.myhasjobwithjwt.payload.user.UserUpdateDto;
 import com.company.job.myhasjobwithjwt.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final JobTypeService jobTypeService;
 
-    public UserService(UserRepository userRepository, SessionUser sessionUser, PasswordEncoder encoder, @Lazy JobTypeService jobTypeService) {
+    public UserService(UserRepository userRepository, SessionUser sessionUser, PasswordEncoder encoder, JobTypeService jobTypeService) {
         this.userRepository = userRepository;
         this.sessionUser = sessionUser;
         this.encoder = encoder;
@@ -64,4 +66,14 @@ public class UserService {
     public User findJobType(JobType jobType) {
         return userRepository.findByJob(UserStatus.DELETED, jobType);
     }
+
+    public Page<User> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public Page<User> getAllActive(Pageable pageable) {
+        JobType byName = jobTypeService.findByName("Ish beruvchi");
+        return userRepository.findAllByStatus(UserStatus.ACTIVE, byName, pageable);
+    }
+
 }

@@ -12,10 +12,8 @@ import com.company.job.myhasjobwithjwt.domains.enums.TokenType;
 import com.company.job.myhasjobwithjwt.domains.User;
 import com.company.job.myhasjobwithjwt.domains.UserSms;
 import com.company.job.myhasjobwithjwt.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +24,6 @@ import java.util.Objects;
 import static com.company.job.myhasjobwithjwt.mappers.UserMapper.USER_MAPPER;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -36,6 +33,16 @@ public class AuthService {
     private final UserSmsService userSmsService;
     private final JobTypeService jobTypeService;
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    public AuthService(@Lazy UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserSmsService userSmsService,@Lazy JobTypeService jobTypeService, ApplicationEventPublisher applicationEventPublisher) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+        this.userSmsService = userSmsService;
+        this.jobTypeService = jobTypeService;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     public User signUp(UserSignUpDto dto) {
         if (!dto.getPassword().equals(dto.getPrePassword())) {
@@ -93,10 +100,6 @@ public class AuthService {
         return jwtUtils.generateAccessToken(phoneNumber, tokenResponse);
     }
 
-    public Page<User> getAllActive(Pageable pageable) {
-        JobType byName = jobTypeService.findByName("Ish beruvchi");
-        return userRepository.findAllByStatus(UserStatus.ACTIVE, byName, pageable);
-    }
 
     public void resendCode(String phoneNumber, SmsCodeType smsCodeType) {
         User user = findByPhone(phoneNumber);
@@ -136,7 +139,5 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Page<User> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
+
 }

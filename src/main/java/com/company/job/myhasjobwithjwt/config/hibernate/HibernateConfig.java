@@ -10,12 +10,15 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.jetbrains.annotations.NotNull;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
+
+import static com.company.job.myhasjobwithjwt.utils.BaseUrls.*;
 
 @Configuration
 public class HibernateConfig {
@@ -62,4 +65,54 @@ public class HibernateConfig {
                                 .bearerFormat("JWT"))
                 ));
     }
+
+    @Bean
+    public GroupedOpenApi allOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("All")
+                .pathsToMatch(BASE_URL + "/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi authOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("Auth")
+                .pathsToMatch(AUTH_URL + "/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi chatOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("Chat")
+                .pathsToMatch(CHAT_URL + "/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi profileOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("Profile")
+                .pathsToMatch(PROFILE_URL + "/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi cwOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("Ads")
+                .pathsToMatch(ADS_URL + "/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi jobOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("Job type")
+                .pathsToMatch(JOB_TYPE_URL + "/**")
+                .build();
+    }
+
+
 }

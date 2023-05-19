@@ -21,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static com.company.job.myhasjobwithjwt.utils.BaseUrls.ADS_URL;
 
 @RestController
@@ -37,7 +35,7 @@ public class AdsController {
             @ApiResponse(responseCode = "200", description = "Ads Created", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO<Ads>> save(@Valid @RequestBody AdsCreateDto dto) {
+    public ResponseEntity<ResponseDTO<Ads>> save(@RequestBody @Valid  AdsCreateDto dto) {
         Ads ads = this.adsService.save(dto);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
     }
@@ -83,7 +81,7 @@ public class AdsController {
     @Operation(summary = "This API is used for update ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ResponseDTO<Ads>> update(@RequestBody AdsUpdateDto dto) {
         Ads ads = this.adsService.update(dto);
         return ResponseEntity.ok(new ResponseDTO<>(ads));
