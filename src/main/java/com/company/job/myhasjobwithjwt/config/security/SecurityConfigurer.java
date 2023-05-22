@@ -112,7 +112,7 @@ public class SecurityConfigurer {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:8080",
-                "https://hasjob.up.railway.app",
+                "https://has-job.up.railway.app",
                 "*"
         ));
 //        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
