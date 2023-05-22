@@ -53,7 +53,7 @@ public class HibernateConfig {
                         .description("Spring Wikipedia Documentation")
                         .url("https://springshop.wiki.github.org/docs"))
                 .servers(List.of(
-                        new Server().url("https://hasjob.up.railway.app").description("Development Server"),
+                        new Server().url("https://has-job.up.railway.app").description("Development Server"),
                         new Server().url("http://localhost:8080").description("My test Server"))
                 )
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
