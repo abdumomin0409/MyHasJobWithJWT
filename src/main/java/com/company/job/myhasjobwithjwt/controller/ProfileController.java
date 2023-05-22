@@ -47,6 +47,7 @@ public class ProfileController {
     @Operation(summary = "This API is used for returning user profile", responses = {
             @ApiResponse(responseCode = "200", description = "User returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
+    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @GetMapping("/get")
     public ResponseEntity<ResponseDTO<ResponseUserDto>> getProfile() {
         ResponseUserDto dto = this.userService.getProfile();
@@ -57,6 +58,7 @@ public class ProfileController {
     @Operation(summary = "This API is used for updating user profile", responses = {
             @ApiResponse(responseCode = "200", description = "User profile updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
+    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO<User>> updateProfile(@RequestBody UserUpdateDto dto) {
         User user = this.userService.update(dto);
@@ -82,6 +84,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "Users returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
     })
+    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @GetMapping("/menu")
     public ResponseEntity<ResponseDTO<Page<?>>> getMenu(@RequestParam(required = false, defaultValue = "10") Integer size,
                                                         @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
@@ -104,6 +107,5 @@ public class ProfileController {
         }
         return ResponseEntity.ok(new ResponseDTO<>(Page.empty()));
     }
-
 
 }
