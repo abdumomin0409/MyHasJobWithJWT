@@ -44,7 +44,7 @@ public class HibernateConfig {
                         .contact(new Contact()
                                 .name("Abdumo'min Shamshidinov ")
                                 .email("shamshiddinovabdumomin2003@gmail.com")
-                                .url("https://github.com/abdumomin0409").url("https://t.me/Mavlonovich_java"))
+                                .url("https://github.com/abdumomin0409"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("http://springdoc.org"))
