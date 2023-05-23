@@ -27,7 +27,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.JOB_TYPE_URL;
 
 @RestController
 @RequestMapping(JOB_TYPE_URL)
-//@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Job type", description = "Job type API")
 public class JobTypeController {
 
@@ -41,7 +41,6 @@ public class JobTypeController {
     @Operation(summary = "This API is used for saving job type", responses = {
             @ApiResponse(responseCode = "201", description = "Job type saved", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO<JobType>> save(@RequestParam String jobName) {
         JobType save = this.jobTypeService.save(jobName);
@@ -52,8 +51,8 @@ public class JobTypeController {
     @Operation(summary = "This API is used for returning the job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job type returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
-    @GetMapping("/find/name")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/find")
     public ResponseEntity<ResponseDTO<ResponseJobDto>> findByName(@RequestParam String jobName) {
         JobType byName = this.jobTypeService.findByName(jobName);
         ResponseJobDto body = new ResponseJobDto(byName.getId(), byName.getName());
@@ -64,8 +63,8 @@ public class JobTypeController {
     @Operation(summary = "This API is used for returning the job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job type returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
-    @GetMapping("/find/id/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/find/{id}")
     public ResponseEntity<ResponseDTO<ResponseJobDto>> findById(@PathVariable Integer id) {
         JobType byId = this.jobTypeService.findById(id);
         ResponseJobDto dto = new ResponseJobDto(byId.getId(), byId.getName());
@@ -76,7 +75,7 @@ public class JobTypeController {
     @Operation(summary = "This API is used for returning all job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job types returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/find/all")
     public ResponseEntity<ResponseDTO<List<ResponseJobDto>>> findAll() {
         List<ResponseJobDto> all = this.jobTypeService.findAll();
@@ -87,7 +86,6 @@ public class JobTypeController {
     @Operation(summary = "This API is used for returning all job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job types returned", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/find/all/fixed")
     public ResponseEntity<ResponseDTO<Page<JobType>>> allJobType(@RequestParam(required = false, defaultValue = "10") Integer size,
                                                                  @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
@@ -101,7 +99,6 @@ public class JobTypeController {
     @Operation(summary = "This API is used for updating job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job type updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO<JobType>> update(@RequestBody JobDto jobUpdateDto) {
         JobType update = this.jobTypeService.update(jobUpdateDto);
@@ -112,7 +109,6 @@ public class JobTypeController {
     @Operation(summary = "This API is used for deleting job type", responses = {
             @ApiResponse(responseCode = "200", description = "Job type deleted", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Integer id) {
         String delete = this.jobTypeService.delete(id);

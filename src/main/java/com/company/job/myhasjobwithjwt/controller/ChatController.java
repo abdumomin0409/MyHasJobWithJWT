@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.company.job.myhasjobwithjwt.utils.BaseUrls.CHAT_URL;
@@ -23,6 +24,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.CHAT_URL;
 @RestController
 @RequestMapping(CHAT_URL)
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @Tag(name = "Chat", description = "Chat API")
 public class ChatController {
     private final ChatService chatService;

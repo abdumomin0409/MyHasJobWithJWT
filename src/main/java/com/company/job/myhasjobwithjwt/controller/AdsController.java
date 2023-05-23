@@ -26,6 +26,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.ADS_URL;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ADS_URL)
+@PreAuthorize("isAuthenticated()")
 @Tag(name = "Ads", description = "This API is used for ads")
 public class AdsController {
     private final AdsService adsService;
@@ -34,7 +35,6 @@ public class AdsController {
     @Operation(summary = "This API is used for create ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads Created", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO<Ads>> save(@RequestBody @Valid AdsCreateDto dto) {
         Ads ads = this.adsService.save(dto);
@@ -45,7 +45,6 @@ public class AdsController {
     @Operation(summary = "This API is used for get ads by id", responses = {
             @ApiResponse(responseCode = "200", description = "Ads found", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @GetMapping("/get/id/{id}")
     public ResponseEntity<ResponseDTO<Ads>> getById(@PathVariable String id) {
         Ads ads = this.adsService.getById(id);
@@ -56,7 +55,6 @@ public class AdsController {
     @Operation(summary = "This API is used for get all ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads found", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @GetMapping("/get/all/active")
     public ResponseEntity<ResponseDTO<Page<Ads>>> getAllActive(@RequestParam(required = false, defaultValue = "10") Integer size,
                                                                @RequestParam(required = false, defaultValue = "1") @Min(value = 1) Integer page) {
@@ -84,7 +82,6 @@ public class AdsController {
     @Operation(summary = "This API is used for update ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads updated", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO<Ads>> update(@RequestBody AdsUpdateDto dto) {
         Ads ads = this.adsService.update(dto);
@@ -95,7 +92,6 @@ public class AdsController {
     @Operation(summary = "This API is used for delete ads", responses = {
             @ApiResponse(responseCode = "200", description = "Ads deleted", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Ads not found", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))})
-    @PreAuthorize("hasRole('ADMIN' || 'USER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO<String>> delete(@PathVariable String id) {
         String delete = this.adsService.delete(id);
