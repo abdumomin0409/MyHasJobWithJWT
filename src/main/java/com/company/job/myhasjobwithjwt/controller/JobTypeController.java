@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +31,6 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.JOB_TYPE_URL;
 public class JobTypeController {
 
     private final JobTypeService jobTypeService;
-
     public JobTypeController(@Lazy JobTypeService jobTypeService) {
         this.jobTypeService = jobTypeService;
     }

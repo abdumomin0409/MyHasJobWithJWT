@@ -26,7 +26,7 @@ public class MyUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (user.getRole() == null)
             return Collections.emptyList();
-        return List.of(new SimpleGrantedAuthority(this.user.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
     }
 
     @Override

@@ -32,7 +32,7 @@ import static com.company.job.myhasjobwithjwt.utils.BaseUrls.*;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfigurer {
     private final JWTAuthenticationFilter filter;
     private final ObjectMapper objectMapper;
@@ -74,6 +74,7 @@ public class SecurityConfigurer {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
